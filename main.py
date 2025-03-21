@@ -13,13 +13,8 @@ def main():
 
     result1 = score_query(sql1)
     result2 = score_query(sql2)
-
-    print("\nQuery 2 Results:")
-    for i in result2['analysis']['analysis']:
-        print(i)
-        print('\n\n')
-    
-    print(result2['analysis']['formatted_query'])
+    print(result1['violation_summary'])
+    print(result2['violation_summary'])
 
 if __name__ == "__main__":
     main()
