@@ -13,8 +13,8 @@ def main():
 
     result1 = score_query(sql1)
     result2 = score_query(sql2)
-    print(result1['violation_summary'])
-    print(result2['violation_summary'])
+    print(result1['score_breakdown'])
+    print(result2['score_breakdown'])
 
 if __name__ == "__main__":
     main()
