@@ -4,4 +4,3 @@ JOIN users u2 on u.id = u2.id
 left join (
   select * from reviews
 ) r on r.user_id = u.id;
-v

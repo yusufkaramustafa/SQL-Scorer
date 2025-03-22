@@ -1,5 +1,6 @@
 import argparse
 from scorer import score_query
+from database import run_explain
 
 def main():
     parser = argparse.ArgumentParser(description="SQL Scorer CLI")
@@ -13,8 +14,8 @@ def main():
 
     result1 = score_query(sql1)
     result2 = score_query(sql2)
-    print(result1['score_breakdown'])
-    print(result2['score_breakdown'])
+
+    print(run_explain(sql1))
 
 if __name__ == "__main__":
     main()

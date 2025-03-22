@@ -24,3 +24,14 @@ def execute_sql(query):
     except SQLAlchemyError as e:
         print(f"SQL execution error {e}")
         return None, None, None
+    
+def run_explain(query):
+    """Runs EXPLAIN QUERY PLAN and returns insights"""
+    try:
+        with engine.connect() as conn:
+            explain_result = conn.execute(text(f"EXPLAIN QUERY PLAN {query}"))
+            rows = explain_result.fetchall()
+            return rows
+    except Exception as e:
+        print(f"Failed to run EXPLAIN: {e}")
+        return []
