@@ -15,7 +15,7 @@ def main():
     result1 = score_query(sql1)
     result2 = score_query(sql2)
 
-    print(run_explain(sql1))
+    print(score_query(sql2))
 
 if __name__ == "__main__":
     main()

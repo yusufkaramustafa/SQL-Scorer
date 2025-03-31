@@ -2,6 +2,7 @@ import sqlfluff
 import sqlparse
 from collections import defaultdict
 from database import execute_sql, run_explain
+from performance_metrics import store_performance_metrics, calculate_performance_score
 
 def analyze_sql(query):
     """Analyzes SQL Query Readability & Best Practices"""
@@ -54,15 +55,15 @@ def score_query(query):
             "score": 0
         }
 
+    # Store performance metrics for future threshold calculations
+    store_performance_metrics(exec_time, cpu_usage, query)
+
     analysis = analyze_sql(query)
     violations = analysis["violation_summary"]
 
     # ---------- 1. Computational Performance (50 pts) ----------
-    # Normalize execution time and CPU to a 0-50 score
-    max_exec_time = 1.0 
-    max_cpu = 100  
-
-    perf_score = max(0, 50 - (exec_time / max_exec_time * 25 + cpu_usage / max_cpu * 25))
+    # Use dynamic thresholds for performance scoring
+    perf_score = calculate_performance_score(exec_time, cpu_usage, query)
 
     # ---------- 2. Best Practices / Optimization (30 pts) ----------
     optimization_categories = [
@@ -85,7 +86,7 @@ def score_query(query):
         "rows_affected": row_count,
         "formatted_query": analysis["formatted_query"],
         "violation_summary": violations,
-        "explain_plan": [row[3] for row in plan_rows],  #
+        "explain_plan": [row[3] for row in plan_rows],
         "explain_notes": explain_notes,
         "score_breakdown": {
             "performance": perf_score,
