@@ -3,6 +3,7 @@ import sqlparse
 from collections import defaultdict
 from database import execute_sql, run_explain
 from performance_metrics import store_performance_metrics, calculate_performance_score
+import math
 
 def analyze_sql(query):
     """Analyzes SQL Query Readability & Best Practices"""
@@ -39,6 +40,24 @@ def analyze_explain_plan(plan_rows):
     explain_score = max(0, 10 - penalties)  
     return explain_score, notes
 
+def calculate_normalized_score(base_score: float, penalties: float, max_penalties: float) -> float:
+    """
+    Calculate a normalized score using exponential decay for penalties
+    base_score: Maximum possible score
+    penalties: Current penalties
+    max_penalties: Maximum possible penalties
+    """
+    if max_penalties == 0:
+        return base_score
+    
+    # Normalize penalties to a value between 0 and 1
+    normalized_penalties = min(penalties / max_penalties, 1.0)
+    
+    # Use exponential decay: score = base_score * e^(-k * normalized_penalties)
+    # where k controls how quickly the score decays
+    k = 2.0  # Adjust this value to control decay rate
+    return base_score * math.exp(-k * normalized_penalties)
+
 def score_query(query):
     exec_time, cpu_usage, row_count = execute_sql(query)
     plan_rows = run_explain(query)
@@ -69,13 +88,23 @@ def score_query(query):
     optimization_categories = [
         "aliasing.table", "ambiguous.join", "unnecessary.subquery"
     ]
-    opt_penalty = sum(violations.get(cat, 0) for cat in optimization_categories) * 5
-    opt_score = max(0, 30 - opt_penalty + explain_score)  
+    # Calculate penalties and maximum possible penalties
+    opt_penalties = sum(violations.get(cat, 0) for cat in optimization_categories) * 5
+    max_opt_penalties = len(optimization_categories) * 5  # Maximum possible penalties
+    
+    # Calculate normalized optimization score
+    opt_score = calculate_normalized_score(30, opt_penalties, max_opt_penalties)
+    # Add explain score (up to 10 points) proportionally
+    opt_score = min(30, opt_score + explain_score)
 
     # ---------- 3. Readability / Layout (20 pts) ----------
     readability_categories = [k for k in violations if k.startswith("layout.") or k.startswith("indent.")]
-    read_penalty = sum(violations[k] for k in readability_categories) * 2
-    read_score = max(0, 20 - read_penalty)
+    # Calculate penalties and maximum possible penalties
+    read_penalties = sum(violations[k] for k in readability_categories) * 2
+    max_read_penalties = len(readability_categories) * 2  # Maximum possible penalties
+    
+    # Calculate normalized readability score
+    read_score = calculate_normalized_score(20, read_penalties, max_read_penalties)
 
     # ---------- Total Score ----------
     total_score = round(perf_score + opt_score + read_score, 2)
