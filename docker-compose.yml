@@ -1,0 +1,8 @@
+services:
+  sql-scorer:
+    build: .
+    volumes:
+      - ./data:/app/data
+      - ./queries:/app/queries
+    environment:
+      - DB_PATH=/app/data/test.db

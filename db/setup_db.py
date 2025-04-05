@@ -1,6 +1,13 @@
+import os
 from sqlalchemy import create_engine, text
+from db.config import DB_URL
 
-DB_URL = "sqlite:///test.db" 
+# Ensure data directory exists
+data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
+os.makedirs(data_dir, exist_ok=True)
+
+# Set up database URL
+DB_URL = f"sqlite:///{os.path.join(data_dir, 'test.db')}"
 engine = create_engine(DB_URL)
 
 def setup_database():

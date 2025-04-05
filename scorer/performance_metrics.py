@@ -1,12 +1,17 @@
+import os
 from sqlalchemy import create_engine, text, Column, Float, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 import numpy as np
 from scorer.query_matcher import get_query_group, QuerySimilarity
+from db.config import DB_URL
+
+# Ensure data directory exists
+data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data')
+os.makedirs(data_dir, exist_ok=True)
 
 # Database setup
-DB_URL = "sqlite:///test.db"
 engine = create_engine(DB_URL)
 Base = declarative_base()
 Session = sessionmaker(bind=engine)
@@ -17,7 +22,7 @@ class QueryPerformance(Base):
     id = Column(String, primary_key=True)
     execution_time = Column(Float)
     cpu_usage = Column(Float)
-    timestamp = Column(DateTime, default=lambda: datetime.now(UTC))
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     query_hash = Column(String)  # Hash of the query for grouping similar queries
     query_text = Column(String)  # Store the original query text
 
@@ -30,7 +35,7 @@ def store_performance_metrics(execution_time, cpu_usage, query):
     try:
         query_group = get_query_group(query)
         performance = QueryPerformance(
-            id=f"{query_group}_{datetime.now(UTC).timestamp()}",
+            id=f"{query_group}_{datetime.now(timezone.utc).timestamp()}",
             execution_time=execution_time,
             cpu_usage=cpu_usage,
             query_hash=query_group,
