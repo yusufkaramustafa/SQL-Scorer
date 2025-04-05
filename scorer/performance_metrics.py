@@ -51,7 +51,7 @@ def find_similar_queries(query, session, threshold=0.8):
     query_group = get_query_group(query)
     recent_queries = session.query(QueryPerformance).order_by(
         QueryPerformance.timestamp.desc()
-    ).limit(100).all()
+    ).limit(1000).all()
     
     similar_queries = []
     for q in recent_queries:

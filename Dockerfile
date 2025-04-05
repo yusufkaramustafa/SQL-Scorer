@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 # Set working directory
 WORKDIR /app
@@ -25,5 +25,8 @@ COPY . .
 ENV PYTHONPATH=/app
 ENV DB_PATH=/app/data/test.db
 
-# Command to run the application
-ENTRYPOINT ["python", "main.py"]
+# Expose Streamlit port
+EXPOSE 8501
+
+# Run Streamlit
+CMD ["streamlit", "run", "app.py"]

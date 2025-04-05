@@ -3,3 +3,4 @@ psutil==5.9.8
 SQLAlchemy==2.0.27
 sqlfluff==2.3.5
 sqlparse==0.4.4
+streamlit==1.32.0 
