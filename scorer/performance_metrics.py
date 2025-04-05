@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime, UTC
 import numpy as np
-from query_matcher import get_query_group, QuerySimilarity
+from scorer.query_matcher import get_query_group, QuerySimilarity
 
 # Database setup
 DB_URL = "sqlite:///test.db"
