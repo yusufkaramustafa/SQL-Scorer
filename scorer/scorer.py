@@ -1,8 +1,8 @@
 import sqlfluff
 import sqlparse
 from collections import defaultdict
-from database import execute_sql, run_explain
-from performance_metrics import store_performance_metrics, calculate_performance_score
+from db.database import execute_sql, run_explain
+from scorer.performance_metrics import store_performance_metrics, calculate_performance_score
 import math
 
 def analyze_sql(query):

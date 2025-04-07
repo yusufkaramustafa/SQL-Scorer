@@ -2,9 +2,9 @@ import time
 import psutil
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
+from db.config import DB_URL
 
 # Connect to SQLite
-DB_URL = "sqlite:///test.db"
 engine = create_engine(DB_URL)
 
 def execute_sql(query):

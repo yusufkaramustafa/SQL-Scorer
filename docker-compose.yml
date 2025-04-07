@@ -1,0 +1,17 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+    command: streamlit run app.py
+    environment:
+      - DB_PATH=/app/data/test.db
+
+  cli:
+    build: .
+    volumes:
+      - ./data:/app/data
+      - ./queries:/app/queries
+    entrypoint: python main.py
