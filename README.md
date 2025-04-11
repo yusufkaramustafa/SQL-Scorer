@@ -28,7 +28,7 @@ SQL-Scorer is a tool for analyzing, comparing, and optimizing SQL queries. It ev
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/karamustafay21/SQL-Scorer
+git clone https://github.com/yusufkaramustafa/SQL-Scorer
 cd SQL-Scorer
 ```
 
